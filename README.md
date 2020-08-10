@@ -73,4 +73,76 @@ class Solution {
         return (s+s).substring(1,(s+s).length() - 1).contains(s);
     }
 }
-    
+
+5. 最长回文子串
+    给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+    示例 1：
+    输入: "babad"
+    输出: "bab"
+    注意: "aba" 也是一个有效答案。
+ 思路：根据回文子串的定义，枚举所有长度大于等于 222 的子串，依次判断它们是否是回文；
+        在具体实现时，可以只针对大于“当前得到的最长回文子串长度”的子串进行“回文验证”；
+        在记录最长回文子串的时候，可以只记录“当前子串的起始位置”和“子串长度”，不必做截取。   
+题解：
+class Solution {
+    public String longestPalindrome(String s) {
+        int len = s.length();
+        if(len < 2) return s;
+        int maxLen = 1;
+        int begin = 0;
+        char ans[] = s.toCharArray();
+        for(int i = 0;i < len - 1;i++){
+            for(int j = i + 1;j < len;j++){
+                if(j - i + 1 > maxLen && validPalindromic(ans,i,j)){
+                    maxLen = j - i + 1;
+                    begin = i;
+                }
+            }
+        }
+        return s.substring(begin,begin + maxLen);
+    }
+    private boolean validPalindromic(char [] ans,int left,int right){
+        while(left < right){
+            if(ans[left] != ans[right])
+                return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+
+6.Z 字形变换
+    将一个给定字符串根据给定的行数，以从上往下、从左到右进行 Z 字形排列。
+    比如输入字符串为 "LEETCODEISHIRING" 行数为 3 时，排列如下：
+    L   C   I   R
+    E T O E S I I G
+    E   D   H   N
+    之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："LCIRETOESIIGEDHN"。
+    请你实现这个将字符串进行指定行数变换的函数：
+    string convert(string s, int numRows);
+    示例 1:
+    输入: s = "LEETCODEISHIRING", numRows = 3
+    输出: "LCIRETOESIIGEDHN"
+思路：按顺序遍历字符串 s；res[i] += c： 把每个字符 c 填入对应行 sis_isi；i += flag： 更新当前字符 c 对应的行索引； flag = - flag： 在达到 ZZZ 字形转折点时，执行反向。
+题解：
+class Solution {
+    public String convert(String s, int numRows) {
+        if(numRows < 2) return s;
+        List<StringBuilder> rows = new ArrayList<StringBuilder>();
+        for(int i = 0;i < numRows;i++)
+            rows.add(new StringBuilder());
+        int i = 0,flag = -1;
+        for(char c : s.toCharArray()){
+            rows.get(i).append(c);
+           //如果索引到达转折点执行反向：flag变号；
+            if(i == 0 || i == numRows - 1)
+                flag = - flag;
+            i += flag;
+        }
+        StringBuilder res = new StringBuilder();
+        for(StringBuilder row : rows)
+            res.append(row);
+        return res.toString();
+    }
+}
